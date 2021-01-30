@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/static/jquery 3.5.0.js"></script>
+    <title>Upload image</title>
+</head>
+
+<body>
+    <div id="upload">
+        <label for="">Upload here</label>
+        <input type="file" id="fileElementId" name="files[]" value="" multiple="true">
+        <button id="submit">Click</button>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#submit").click(function() {
+                var inp = document.getElementById('fileElementId');
+                for (var i = 0; i < inp.files.length; i++) {
+                    var name = inp.files.item(i).name;
+                    alert(name);
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>

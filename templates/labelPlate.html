@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/static/jquery 3.5.0.js"></script>
+    <title>Đánh nhãn dữ liệu biển số</title>
+</head>
+
+<body>
+    <h3>Xin chào Bình. Mời đánh nhãn dữ liệu biển số xe</h3>
+    <div id="label">
+        <table>
+            <thead>
+                <td>STT</td>
+                <td>Ảnh</td>
+                <td>Nhập biển số</td>
+                <td>Xác nhận</td>
+            </thead>
+            <tr>
+                <td>1</td>
+                <td><img src="" alt=""></td>
+                <td><input type="text" name="labelPlt" value="" id="labelPlt"></td>
+                <td><button class="submit">Xác nhận</button></td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $(".submit").click(function() {
+                var lb = $("#labelPlt").val();
+                $.ajax({
+                    url: '/sendPlt',
+                    type: 'post',
+                    data: {
+                        label: lb,
+                        user: "Bình",
+                        img_name: "30H 25255"
+                    },
+                    dataType: "json",
+                    success: function(res) {
+                        alert(res.msg);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                })
+            });
+        });
+    </script>
+</body>
+
+</html>

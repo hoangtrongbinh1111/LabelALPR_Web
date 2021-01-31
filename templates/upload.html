@@ -4,26 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/static/jquery 3.5.0.js"></script>
+    <script src="/static/js/jquery 3.5.0.js"></script>
     <title>Upload image</title>
 </head>
 
 <body>
+    <div id="db">
+        <h3>Delete table dataset image</h3>
+        <button id="btn-del">Ấn để xóa bảng Dataset</button>
+    </div>
     <div id="upload">
         <label for="">Upload here</label>
         <input type="file" id="fileElementId" name="files[]" value="" multiple="true">
+        <input type="text" id="folder_parent" required>
         <button id="submit">Click</button>
     </div>
     <script>
         $(document).ready(function() {
             $("#submit").click(function() {
                 var inp = document.getElementById('fileElementId');
+                var filename = ""
                 for (var i = 0; i < inp.files.length; i++) {
                     var name = inp.files.item(i).name;
-                    alert(name);
+                    filename = filename + "/static/Data Plate/" + $("#folder_parent").val() + "/" + name + "**";
                 }
+                $.ajax({
+                    url: '/upload',
+                    type: 'post',
+                    data: {
+                        filename: filename
+                    },
+                    dataType: "json",
+                    success: function(res) {
+                        alert("Upload thành công!");
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                })
             });
-
+            $("#btn-del").click(function() {
+                $.ajax({
+                    url: '/delete_table_img',
+                    type: 'post',
+                    success: function(res) {
+                        alert("Xóa thành công");
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                })
+            });
         });
     </script>
 </body>

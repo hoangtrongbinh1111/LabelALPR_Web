@@ -4,51 +4,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/static/jquery 3.5.0.js"></script>
+    <link rel="stylesheet" href="/static/lib/bootstrap-4.5.0-dist/css/bootstrap.css">
+    <script src="/static/lib/bootstrap-4.5.0-dist/js/jquery 3.5.0.js"></script>
+    <script src="/static/lib/bootstrap-4.5.0-dist/js/popper.min.js"></script>
+    <script src="/static/lib/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
     <title>Đánh nhãn dữ liệu biển số</title>
 </head>
 
 <body>
-    <h3>Xin chào Bình. Mời đánh nhãn dữ liệu biển số xe</h3>
-    <div id="label">
-        <table>
-            <thead>
-                <td>STT</td>
-                <td>Ảnh</td>
-                <td>Nhập biển số</td>
-                <td>Xác nhận</td>
-            </thead>
-            <tr>
-                <td>1</td>
-                <td><img src="" alt=""></td>
-                <td><input type="text" name="labelPlt" value="" id="labelPlt"></td>
-                <td><button class="submit">Xác nhận</button></td>
-            </tr>
-        </table>
-    </div>
-    <script>
-        $(document).ready(function() {
-            $(".submit").click(function() {
-                var lb = $("#labelPlt").val();
-                $.ajax({
-                    url: '/sendPlt',
-                    type: 'post',
-                    data: {
-                        label: lb,
-                        user: "Bình",
-                        img_name: "30H 25255"
-                    },
-                    dataType: "json",
-                    success: function(res) {
-                        alert(res.msg);
-                    },
-                    error: function(error) {
-                        console.log(error);
+    <style>
+        table {
+            width: 50%;
+            text-align: center;
+            margin: 0px auto;
+        }
+        
+        #info {
+            margin-left: 1rem;
+        }
+        /* #label,
+        h3 {
+            text-align: center;
+        } */
+        
+        .next-label {
+            display: none;
+        }
+    </style>
+    <div id="info">
+        <h3>Người gán:<b id="username">{{username}}</b></h3>
+        <p>Đã gán nhãn: <b>{{count}}</b> ảnh</p>
+        <p>Số lượng ảnh còn lại phải gán trong CSDL: <b>{{remains}}</b> ảnh</p>
+        <a class="btn btn-success mb-3" href="/viewImg/{{username}}" target="_blank">Xem danh sách ảnh</a>
+        <a class="btn btn-danger mb-3" href="/login">Đăng xuất</a>
+        <div id="label">
+            <table id="myTable" class="table thead-light table-striped table-bordered">
+                <thead>
+                    <td>ID</td>
+                    <td>Ảnh cần gán nhãn</td>
+                    <td>Nhập biển số</td>
+                    <td>Bỏ</td>
+                </thead>
+
+                {% for row in rows %}
+                <tr>
+                    <td>{{row["id"]}}</td>
+                    <td><img src="{{row['filename']}}" alt=""></td>
+                    <td><input type="text" name="labelPlt" value="" class="labelPlt mr-2" data-id="{{row['id']}}"></td>
+                    <td><input type="checkbox" id="cblabelPlt-{{row['id']}}" data-id="{{row['id']}}"></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <p id="error" class="text-danger text-center"></p>
+            <div class=" flex text-center ">
+                <button class="submit btn btn-success">Xác nhận</button>
+                <button class="next-label btn btn-danger">Gán nhãn tiếp</button>
+            </div>
+            <div id="note">
+                <h3>HƯỚNG DẪN GÁN NHÃN</h3>
+                <ul>
+                    <li>Điền đầy đủ y nguyên thông tin có trong biển số</li>
+                    <li>Biển số 1 hàng: <img src="/static/sample/image_1_dong.png" alt=""> => <b>51F-311.18</b></li>
+                    <li>Biển số 2 hàng: <img src="/static/sample/image_2_dong.png" alt=""> => <b>68-C1/375.20</b> (*** Hàng 1 và hàng 2 cách nhau bởi dấu <b>/</b> ***)</li>
+                    <li>Nếu ảnh nào mờ, không rõ => Ấn checkbox <b>"Bỏ"</b></li>
+                </ul>
+            </div>
+
+        </div>
+        <script>
+            $(document).ready(function() {
+                $(".submit ").click(function() {
+                    listID_Label = ""
+                        //get table
+                    var myTable = document.getElementById("myTable");
+                    //get rows of table
+                    var rowLength = myTable.rows.length;
+                    //loop through rows
+                    for (i = 1; i < rowLength; i++) {
+                        //get cells of current row
+                        var oCells = myTable.rows.item(i).cells;
+                        if ($(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() == "" && $("#cblabelPlt-" + oCells.item(0).innerHTML).prop("checked") == false) {
+                            alert("Bạn phải gán đủ thông tin các biển số!");
+                            return;
+                        }
+                        // listLabel = listLabel + $(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() + "/ ";
+                        // list_id_image = list_id_image + oCells.item(0).innerHTML + "/ ";
+                        if ($("#cblabelPlt-" + oCells.item(0).innerHTML).prop("checked") == false) {
+                            listID_Label = listID_Label + oCells.item(0).innerHTML + ":" + $(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() + "/";
+                        } else {
+                            listID_Label = listID_Label + oCells.item(0).innerHTML + ":" + "Error" + "/";
+                        }
                     }
-                })
+                    $.ajax({
+                        url: '/sendPlt',
+                        type: 'post',
+                        data: {
+                            listID_Label: listID_Label,
+                            user: $("#username").text()
+                        },
+                        dataType: "json",
+                        success: function(res) {
+                            if (res.error != "") {
+                                $("p#error").text("Lỗi không cập nhật được : " + res.error);
+                            } else {
+                                $("p#error").text("Gán nhãn thành công");
+                                $(".next-label").css('display', 'inline-block');
+                                $(".submit").css('display', 'none');
+                            }
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    })
+                });
+
+                $(".next-label").click(function() {
+                    window.location.reload();
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 
 </html>

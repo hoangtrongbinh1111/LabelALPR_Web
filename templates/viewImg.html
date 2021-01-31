@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cơ sở dữ liệu gán nhãn</title>
+</head>
+
+<body>
+    <h3>Information</h3>
+    <table border=5>
+        <thead>
+            <td>ID</td>
+            <td>Image_name</td>
+            <td>label</td>
+            <td>status</td>
+            <td>username</td>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td>{{row["id"]}}</td>
+                <td><img src="{{row['filename']}}" alt=""></td>
+                <td>{{row["label"]}}</td>
+                <td>{{row["status"]}}</td>
+                <td>{{row["username"]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

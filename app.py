@@ -84,7 +84,7 @@ def labelPlate(username):
 @app.route('/sendPlt',methods = ['POST', 'GET'])
 def sendPlt():
     if request.method=='POST':
-        lb=request.form['listID_Label'].split("/")
+        lb=request.form['listID_Label'].split("**")
         user=request.form['user']        
         data=dict()
         for item in lb:

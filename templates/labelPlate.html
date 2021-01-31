@@ -90,9 +90,9 @@
                         // listLabel = listLabel + $(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() + "/ ";
                         // list_id_image = list_id_image + oCells.item(0).innerHTML + "/ ";
                         if ($("#cblabelPlt-" + oCells.item(0).innerHTML).prop("checked") == false) {
-                            listID_Label = listID_Label + oCells.item(0).innerHTML + ":" + $(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() + "/";
+                            listID_Label = listID_Label + oCells.item(0).innerHTML + ":" + $(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() + "**";
                         } else {
-                            listID_Label = listID_Label + oCells.item(0).innerHTML + ":" + "Error" + "/";
+                            listID_Label = listID_Label + oCells.item(0).innerHTML + ":" + "Error" + "**";
                         }
                     }
                     $.ajax({
@@ -119,6 +119,9 @@
                 });
 
                 $(".next-label").click(function() {
+
+                    $("input[type=text]").val("");
+                    $("input[type=checkbox]").prop("checked", true);
                     window.location.reload();
                 });
             });

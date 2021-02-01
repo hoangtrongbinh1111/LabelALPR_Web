@@ -21,22 +21,47 @@
         
         #info {
             margin-left: 1rem;
+            margin-top: 1rem;
         }
         /* #label,
         h3 {
             text-align: center;
         } */
         
+        #info-user,
+        #note {
+            display: inline-block;
+        }
+        
+        #note {
+            float: right;
+            margin-right: 1rem;
+        }
+        
         .next-label {
             display: none;
         }
     </style>
     <div id="info">
-        <h3>Người gán:<b id="username">{{username}}</b></h3>
-        <p>Đã gán nhãn: <b>{{count}}</b> ảnh</p>
-        <p>Số lượng ảnh còn lại phải gán trong CSDL: <b>{{remains}}</b> ảnh</p>
-        <a class="btn btn-success mb-3" href="/viewImg/{{username}}" target="_blank">Xem danh sách ảnh</a>
-        <a class="btn btn-danger mb-3" href="/login">Đăng xuất</a>
+        <div class="">
+            <div id="info-user">
+                <h3>Người gán: <b id="username">{{username}}</b></h3>
+                <p>Cảm ơn <b>{{username}}</b> đã gán nhãn được: <b>{{count}}</b> ảnh</p>
+                <p>Số lượng ảnh còn lại phải gán nhãn: <b>{{remains}}</b> ảnh</p>
+                <a class="btn btn-success mb-3" href="/viewImg/{{username}}" target="_blank">Xem danh sách ảnh</a>
+                <a class="btn btn-danger mb-3" href="/login">Đăng xuất</a>
+            </div>
+            <div id="note">
+                <h3>HƯỚNG DẪN GÁN NHÃN</h3>
+                <ul>
+                    <li>Điền đầy đủ y nguyên thông tin có trong biển số</li>
+                    <li>Biển số 1 hàng: <img src="/static/sample/image_1_dong.png" alt=""> => <b>51F-311.18</b></li>
+                    <li>Biển số 2 hàng: <img src="/static/sample/image_2_dong.png" alt=""> => <b>68-C1/375.20</b> (*** Hàng 1 và hàng 2 cách nhau bởi dấu <b>/</b> ***)</li>
+                    <li>Nếu ảnh nào mờ, không rõ => Ấn checkbox <b>"Bỏ"</b></li>
+                </ul>
+            </div>
+        </div>
+
         <div id="label">
             <table id="myTable" class="table thead-light table-striped table-bordered">
                 <thead>
@@ -58,16 +83,7 @@
             <p id="error" class="text-danger text-center"></p>
             <div class=" flex text-center ">
                 <button class="submit btn btn-success">Xác nhận</button>
-                <button class="next-label btn btn-danger">Gán nhãn tiếp</button>
-            </div>
-            <div id="note">
-                <h3>HƯỚNG DẪN GÁN NHÃN</h3>
-                <ul>
-                    <li>Điền đầy đủ y nguyên thông tin có trong biển số</li>
-                    <li>Biển số 1 hàng: <img src="/static/sample/image_1_dong.png" alt=""> => <b>51F-311.18</b></li>
-                    <li>Biển số 2 hàng: <img src="/static/sample/image_2_dong.png" alt=""> => <b>68-C1/375.20</b> (*** Hàng 1 và hàng 2 cách nhau bởi dấu <b>/</b> ***)</li>
-                    <li>Nếu ảnh nào mờ, không rõ => Ấn checkbox <b>"Bỏ"</b></li>
-                </ul>
+                <!-- <button class="next-label btn btn-danger">Gán nhãn tiếp</button> -->
             </div>
 
         </div>
@@ -84,7 +100,7 @@
                         //get cells of current row
                         var oCells = myTable.rows.item(i).cells;
                         if ($(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() == "" && $("#cblabelPlt-" + oCells.item(0).innerHTML).prop("checked") == false) {
-                            alert("Bạn phải gán đủ thông tin các biển số!");
+                            alert("Bạn phải gán nhãn đủ 5 biển số!");
                             return;
                         }
                         // listLabel = listLabel + $(".labelPlt[data-id=" + oCells.item(0).innerHTML + " ] ").val() + "/ ";
@@ -107,9 +123,12 @@
                             if (res.error != "") {
                                 $("p#error").text("Lỗi không cập nhật được : " + res.error);
                             } else {
-                                $("p#error").text("Gán nhãn thành công");
-                                $(".next-label").css('display', 'inline-block');
-                                $(".submit").css('display', 'none');
+                                // $("p#error").text("Gán nhãn thành công");
+                                // $(".next-label").css('display', 'inline-block');
+                                // $(".submit").css('display', 'none');
+                                $("input[type=text]").val("");
+                                $("input[type=checkbox]").prop("checked", false);
+                                window.location.reload();
                             }
                         },
                         error: function(error) {
@@ -121,7 +140,7 @@
                 $(".next-label").click(function() {
 
                     $("input[type=text]").val("");
-                    $("input[type=checkbox]").prop("checked", true);
+                    $("input[type=checkbox]").prop("checked", false);
                     window.location.reload();
                 });
             });
